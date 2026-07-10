@@ -4,28 +4,302 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Atividade 2 - DOM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; line-height: 1.6; }
-        section { margin-bottom: 30px; border-bottom: 1px solid #eee; pb: 10px; }
-        .contador-vazio { color: rgb(246, 150, 150); font-weight: bold; }
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            --primary: #8a2be2;
+            --secondary: #ff1493;
+            --bg-grad-1: #4158D0;
+            --bg-grad-2: #C850C0;
+            --bg-grad-3: #FFCC70;
+            --glass-bg: rgba(255, 255, 255, 0.75);
+            --glass-border: rgba(255, 255, 255, 0.5);
+            --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+            --text-main: #2d3748;
+            --text-muted: #4a5568;
+            --radius: 20px;
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background: linear-gradient(45deg, var(--bg-grad-1) 0%, var(--bg-grad-2) 46%, var(--bg-grad-3) 100%);
+            background-attachment: fixed;
+            color: var(--text-main);
+            line-height: 1.6;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 700px;
+            width: 100%;
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius);
+            box-shadow: var(--glass-shadow);
+            padding: 40px;
+            position: relative;
+            overflow: hidden;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 30px;
+            color: #1a202c;
+            text-align: center;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        section { 
+            margin-bottom: 30px; 
+            padding: 25px;
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            transition: var(--transition);
+        }
+
+        section:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: #2d3748;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h3::before {
+            content: '';
+            display: block;
+            width: 12px;
+            height: 12px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(138, 43, 226, 0.5);
+        }
+
+        button {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: inherit;
+            box-shadow: 0 4px 15px rgba(255, 20, 147, 0.3);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 20, 147, 0.5);
+        }
+        
+        button:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 10px rgba(255, 20, 147, 0.3);
+        }
+
+        #btnReset {
+            background: rgba(255, 255, 255, 0.7);
+            color: #e53e3e;
+            border: 2px solid rgba(229, 62, 62, 0.5);
+            width: 100%;
+            margin-top: 20px;
+            padding: 16px;
+            font-size: 1.1rem;
+            box-shadow: none;
+        }
+
+        #btnReset:hover {
+            background: rgba(229, 62, 62, 0.1);
+            border-color: #e53e3e;
+        }
+
+        /* Contador */
+        .contador-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            background: rgba(255, 255, 255, 0.5);
+            padding: 20px;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.6);
+        }
+
+        #contadorDisplay {
+            font-size: 2.5rem;
+            font-weight: 700;
+            min-width: 80px;
+            text-align: center;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            padding: 0 10px;
+        }
+
+        /* Inputs and Selects */
+        label {
+            display: block;
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 10px;
+            color: var(--text-main);
+        }
+
+        input[type="text"], select {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid rgba(255, 255, 255, 0.8);
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: inherit;
+            color: var(--text-main);
+            transition: var(--transition);
+            background: rgba(255, 255, 255, 0.6);
+            margin-bottom: 15px;
+            backdrop-filter: blur(5px);
+        }
+
+        input[type="text"]:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: 0 0 0 4px rgba(138, 43, 226, 0.15);
+        }
+
+        p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 16px;
+        }
+
+        #contadorChar {
+            font-weight: 700;
+            color: white;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            padding: 4px 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(255, 20, 147, 0.3);
+        }
+
+        /* Dynamic containers */
+        #containerParagrafos p {
+            background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,255,255,0.7));
+            padding: 15px 20px;
+            border-radius: 12px;
+            border-left: 5px solid var(--secondary);
+            color: var(--text-main);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            animation: slideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        #containerListas ul, #containerListas ol {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 20px 20px 20px 40px;
+            border-radius: 12px;
+            margin-top: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            animation: slideIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid rgba(255, 255, 255, 0.9);
+        }
+
+        #containerListas li {
+            margin-bottom: 10px;
+            color: var(--text-main);
+            font-weight: 500;
+        }
+
+        #containerListas li:last-child {
+            margin-bottom: 0;
+        }
+        
+        .flex-row {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .flex-row select {
+            margin-bottom: 0;
+            flex: 1;
+        }
+        
+        .flex-row button {
+            white-space: nowrap;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(-15px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        
+        @media (max-width: 600px) {
+            .flex-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .contador-wrapper {
+                flex-direction: column;
+            }
+            .container {
+                padding: 25px;
+            }
+            h1 {
+                font-size: 1.8rem;
+            }
+        }
     </style>
 </head>
-<body style="background-color:rgb(198, 248, 255);">
+<body>
 
-<h1 style="background-color:rgba(255, 189, 189, 0.767);">Atividade 2 – DOM: conceitos básicos</h1>
+<div class="container">
+    <h1>Atividade 2 – DOM: conceitos básicos</h1>
     
-
     <section>
         <h3>Contador de Cliques</h3>
-        <button id="btnIncrementar">Incrementar (+)</button>
-        <span id="contadorDisplay" style="font-size: 1.5em; margin: 0 10px;">0</span>
-        <button id="btnDecrementar">Decrementar (-)</button>
+        <div class="contador-wrapper">
+            <button id="btnDecrementar">Decrementar (-)</button>
+            <span id="contadorDisplay">0</span>
+            <button id="btnIncrementar">Incrementar (+)</button>
+        </div>
     </section>
 
     <section>
         <h3>Texto Dinâmico e Contador de Caracteres</h3>
-        <label for="inputTexto">Digite sua mensagem (Enter para adicionar):</label><br>
-        <input type="text" id="inputTexto" placeholder="Escreva algo..." style="width: 300px;">
+        <label for="inputTexto">Digite sua mensagem (Enter para adicionar):</label>
+        <input type="text" id="inputTexto" placeholder="Escreva algo...">
         <p>Caracteres (sem espaços): <span id="contadorChar">0</span></p>
         <div id="containerParagrafos"></div>
     </section>
@@ -33,17 +307,20 @@
     <section>
         <h3>Adicionar Novo Item</h3>
         <label>Escolha o tipo de item:</label>
-        <select id="tipoLista">
-            <option value="ul">Lista Não Ordenada (Bolinhas)</option>
-            <option value="ol">Lista Ordenada (Números)</option>
-        </select>
-        <button id="btnAddItem">Inserir Lista</button>
+        <div class="flex-row">
+            <select id="tipoLista">
+                <option value="ul">Lista Não Ordenada (Bolinhas)</option>
+                <option value="ol">Lista Ordenada (Números)</option>
+            </select>
+            <button id="btnAddItem">Inserir Lista</button>
+        </div>
         <div id="containerListas"></div>
     </section>
 
-    <button id="btnReset" style="background-color: #ffcccc; padding: 10px; cursor: pointer;">
+    <button id="btnReset">
         Resetar Tudo
     </button>
+</div>
 
     <script src="script.js"></script>
 </body>
